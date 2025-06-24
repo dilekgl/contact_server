@@ -3,7 +3,7 @@ services:
     name: contact-api
     env: node
     plan: free
-    buildCommand: ""
+    buildCommand: npm install
     startCommand: node server.js
     envVars:
       - key: MAIL_USER
