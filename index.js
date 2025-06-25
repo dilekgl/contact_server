@@ -11,11 +11,14 @@ app.post("/send", async (req, res) => {
 
   const transporter = nodemailer.createTransport({
     host: "mail.anchmarmarine.com",
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
     auth: {
       user: "info@anchmarmarine.com",
-      pass: "Anchmar!2001+-/", // şifreni burada kullan
+      pass: "Anchmar!2001+-/",  // Şifreni buraya yaz
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   });
 
@@ -30,7 +33,7 @@ app.post("/send", async (req, res) => {
     await transporter.sendMail(mailOptions);
     res.status(200).json({ message: "Mail başarıyla gönderildi" });
   } catch (error) {
-    console.error("Hata:", error);
+    console.error("Mail gönderme hatası:", error);
     res.status(500).json({ message: "Mail gönderilemedi" });
   }
 });
