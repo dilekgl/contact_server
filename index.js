@@ -15,7 +15,7 @@ app.post("/send", async (req, res) => {
     secure: true,
     auth: {
       user: "info@anchmarmarine.com",
-      pass: "Anchmar!2001+-/", // Şifreni buraya yaz
+      pass: "Anchmar!2001+-/", // şifreni burada kullan
     },
   });
 
@@ -35,6 +35,7 @@ app.post("/send", async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
-  console.log("Backend 3001 portunda çalışıyor");
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Backend ${PORT} portunda çalışıyor`);
 });
