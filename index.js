@@ -14,7 +14,7 @@ app.post("/send", async (req, res) => {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT),
-    secure: false, // STARTTLS için false (587 kullanıyoruz)
+    secure: false, // 587 için STARTTLS
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
@@ -25,8 +25,8 @@ app.post("/send", async (req, res) => {
   });
 
   const mailOptions = {
-    from: email, // kullanıcının yazdığı email
-    to: process.env.SMTP_USER, // sabit gelen kutusu
+    from: email,
+    to: process.env.SMTP_USER,
     subject: `İletişim Formu: ${name}`,
     text: message,
   };
@@ -38,4 +38,10 @@ app.post("/send", async (req, res) => {
     console.error("Mail gönderme hatası:", error);
     res.status(500).json({ message: "Mail gönderilemedi" });
   }
+});
+
+// ⬇️ Burası eksikti — Railway için çok önemli!
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Backend ${PORT} portunda çalışıyor`);
 });
