@@ -1,3 +1,5 @@
+require("dotenv").config(); // .env dosyasını yükle
+
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
@@ -10,12 +12,12 @@ app.post("/send", async (req, res) => {
   const { name, email, message } = req.body;
 
   const transporter = nodemailer.createTransport({
-    host: "mail.anchmarmarine.com",
-    port: 587,
-    secure: false,
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT),
+    secure: false, // STARTTLS için false (587 kullanıyoruz)
     auth: {
-      user: "info@anchmarmarine.com",
-      pass: "Anchmar!2001+-/",  // Şifreni buraya yaz
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
     },
     tls: {
       rejectUnauthorized: false,
@@ -23,8 +25,8 @@ app.post("/send", async (req, res) => {
   });
 
   const mailOptions = {
-    from: email,
-    to: "info@anchmarmarine.com",
+    from: email, // kullanıcının yazdığı email
+    to: process.env.SMTP_USER, // sabit gelen kutusu
     subject: `İletişim Formu: ${name}`,
     text: message,
   };
@@ -36,9 +38,4 @@ app.post("/send", async (req, res) => {
     console.error("Mail gönderme hatası:", error);
     res.status(500).json({ message: "Mail gönderilemedi" });
   }
-});
-
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Backend ${PORT} portunda çalışıyor`);
 });
