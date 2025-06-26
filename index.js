@@ -1,5 +1,4 @@
-require("dotenv").config(); // .env dosyasını yükle
-
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const nodemailer = require("nodemailer");
@@ -10,11 +9,12 @@ app.use(express.json());
 
 app.post("/send", async (req, res) => {
   const { name, email, message } = req.body;
+  console.log("📩 Yeni istek alındı:", { name, email });
 
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT),
-    secure: false, // 587 için STARTTLS
+    secure: false,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
@@ -24,24 +24,25 @@ app.post("/send", async (req, res) => {
     },
   });
 
-  const mailOptions = {
-    from: email,
-    to: process.env.SMTP_USER,
-    subject: `İletişim Formu: ${name}`,
-    text: message,
-  };
-
   try {
-    await transporter.sendMail(mailOptions);
+    await transporter.verify(); // SMTP bağlantısını test et
+    console.log("✅ SMTP bağlantısı başarılı");
+
+    await transporter.sendMail({
+      from: email,
+      to: process.env.SMTP_USER,
+      subject: `İletişim Formu: ${name}`,
+      text: message,
+    });
+
     res.status(200).json({ message: "Mail başarıyla gönderildi" });
   } catch (error) {
-    console.error("Mail gönderme hatası:", error);
+    console.error("❌ Mail gönderme hatası:", error);
     res.status(500).json({ message: "Mail gönderilemedi" });
   }
 });
 
-// ⬇️ Burası eksikti — Railway için çok önemli!
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Backend ${PORT} portunda çalışıyor`);
+  console.log(`🚀 Backend ${PORT} portunda çalışıyor`);
 });
